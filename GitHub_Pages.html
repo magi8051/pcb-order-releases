@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Pages로 HTML 호스팅하기 - 따라하기 가이드</title>
+<style>
+:root{--ink:#1f2328;--sub:#59636e;--line:#d1d9e0;--bg:#f6f8fa;--green:#1f883d;--hl:#e5534b;--blue:#0969da;--teal:#0f6e56}
+*{box-sizing:border-box}
+body{font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:var(--ink);max-width:860px;margin:0 auto;padding:32px 20px 80px;line-height:1.75;font-size:16px}
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:21px;margin:48px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:24px 0 8px}
+.lead{color:var(--sub);margin:0 0 24px}
+.toc{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 22px}
+.toc ol{margin:6px 0;padding-left:20px}
+.toc a{color:var(--blue);text-decoration:none}
+ol.steps{padding-left:22px}
+ol.steps li{margin:6px 0}
+.btn{display:inline-block;padding:1px 9px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:14px;white-space:nowrap}
+.btn.g{background:var(--green);color:#fff;border-color:var(--green)}
+code{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:14px;font-family:Consolas,monospace}
+.fig{margin:16px 0 8px;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}
+.fig svg{display:block;width:100%;height:auto}
+.cap{font-size:13px;color:var(--sub);text-align:center;margin-top:6px}
+.note{border-left:4px solid var(--blue);background:#ddf4ff;padding:10px 16px;margin:16px 0;border-radius:0 8px 8px 0}
+.warn{border-left:4px solid #bf8700;background:#fff8c5;padding:10px 16px;margin:16px 0;border-radius:0 8px 8px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+@media print{h2{page-break-before:auto}.fig{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<h1>GitHub Pages로 HTML 호스팅하기</h1>
+<p class="lead">명령어 없이 GitHub 웹사이트에서만 진행하는 방법이에요. 2026-11-13 실제 테스트한 순서 그대로 정리했어요.<br>
+테스트 결과: <a href="https://developerminki.github.io/pages-test/">https://developerminki.github.io/pages-test/</a></p>
+
+<div class="toc"><b>목차</b>
+<ul style="list-style:none;padding-left:4px;margin:6px 0">
+<li><a href="#overview">0. 전체 흐름 한눈에 보기</a></li>
+<li><a href="#s1">1. 저장소(Repository) 만들기</a></li>
+<li><a href="#s2">2. index.html 올리기</a></li>
+<li><a href="#s3">3. GitHub Pages 켜기</a></li>
+<li><a href="#s4">4. 배포 확인하고 접속하기</a></li>
+<li><a href="#s5">5. 내용 수정하기</a></li>
+<li><a href="#trouble">안 될 때 확인할 것</a></li>
+<li><a href="#cli">(선택) 명령어로 올리는 방법</a></li>
+</ul></div>
+
+<div class="warn"><b>시작 전에 꼭 확인하세요.</b> GitHub Pages 사이트는 <b>주소를 아는 사람이면 누구나</b> 볼 수 있어요. 무료 계정에서는 저장소도 Public(공개)이어야 해요. 발주 내역처럼 회사 내부 자료는 공개해도 되는지 먼저 확인하세요.</div>
+
+<!-- ============ OVERVIEW ============ -->
+<h2 id="overview">0. 전체 흐름 한눈에 보기</h2>
+<div class="fig">
+<svg viewBox="0 0 800 250" font-family="Malgun Gothic, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#59636e" stroke-width="1.6"/></marker></defs>
+<g font-size="15" text-anchor="middle">
+<rect x="10" y="30" width="140" height="80" rx="10" fill="#ddf4ff" stroke="#0969da"/>
+<text x="80" y="62" font-weight="bold" fill="#0a3069">① 저장소 만들기</text><text x="80" y="88" font-size="13" fill="#0a3069">New repository</text>
+<rect x="170" y="30" width="140" height="80" rx="10" fill="#ddf4ff" stroke="#0969da"/>
+<text x="240" y="62" font-weight="bold" fill="#0a3069">② 파일 올리기</text><text x="240" y="88" font-size="13" fill="#0a3069">index.html 커밋</text>
+<rect x="330" y="30" width="140" height="80" rx="10" fill="#ddf4ff" stroke="#0969da"/>
+<text x="400" y="62" font-weight="bold" fill="#0a3069">③ Pages 켜기</text><text x="400" y="88" font-size="13" fill="#0a3069">Settings → Pages</text>
+<rect x="490" y="30" width="140" height="80" rx="10" fill="#fff8c5" stroke="#bf8700"/>
+<text x="560" y="62" font-weight="bold" fill="#6c4a00">④ 자동 배포</text><text x="560" y="88" font-size="13" fill="#6c4a00">약 1~2분 대기</text>
+<rect x="650" y="30" width="140" height="80" rx="10" fill="#dafbe1" stroke="#1f883d"/>
+<text x="720" y="62" font-weight="bold" fill="#116329">⑤ 접속</text><text x="720" y="88" font-size="13" fill="#116329">주소로 열림</text>
+</g>
+<g stroke="#59636e" stroke-width="1.6"><line x1="152" y1="70" x2="166" y2="70" marker-end="url(#a)"/><line x1="312" y1="70" x2="326" y2="70" marker-end="url(#a)"/><line x1="472" y1="70" x2="486" y2="70" marker-end="url(#a)"/><line x1="632" y1="70" x2="646" y2="70" marker-end="url(#a)"/></g>
+<rect x="170" y="150" width="620" height="70" rx="10" fill="#f6f8fa" stroke="#d1d9e0"/>
+<text x="480" y="180" text-anchor="middle" font-size="15" fill="#1f2328" font-weight="bold">완성 주소 형식</text>
+<text x="480" y="204" text-anchor="middle" font-size="15" fill="#0969da" font-family="Consolas, monospace">https://내아이디.github.io/저장소이름/</text>
+<path d="M240 112 V185 H168" fill="none" stroke="#59636e" stroke-width="1.2" stroke-dasharray="4 4"/>
+<text x="20" y="175" font-size="13" fill="#59636e">수정할 땐 ②만</text>
+<text x="20" y="195" font-size="13" fill="#59636e">다시 하면 자동 반영</text>
+</svg>
+<div class="cap">①~③은 처음 한 번만, 이후 수정은 ②만 반복하면 돼요.</div>
+</div>
+
+<!-- ============ STEP 1 ============ -->
+<h2 id="s1">1. 저장소(Repository) 만들기</h2>
+<ol class="steps">
+<li><a href="https://github.com">github.com</a>에 로그인해요.</li>
+<li>오른쪽 위 <span class="btn">+ ▾</span>를 누르고 <b>New repository</b>를 눌러요. (바로가기: <a href="https://github.com/new">github.com/new</a>)</li>
+<li><b>Repository name</b>에 저장소 이름을 영어로 입력해요. 예: <code>pages-test</code>, <code>jlcpcb</code><br>
+이름 아래에 초록색으로 <i>"… is available."</i>가 뜨면 사용할 수 있는 이름이에요.</li>
+<li><b>Description</b>(설명)은 선택이에요. 비워 둬도 돼요.</li>
+<li><b>Choose visibility</b>가 <span class="btn">Public</span>인지 확인해요.</li>
+<li>README, .gitignore, license는 그대로 두고, 오른쪽 아래 <span class="btn g">Create repository</span>를 눌러요.</li>
+</ol>
+<div class="fig">
+<svg viewBox="0 0 800 400" font-family="Malgun Gothic, sans-serif" font-size="14">
+<rect x="1" y="1" width="798" height="398" rx="8" fill="#fff" stroke="#d1d9e0"/>
+<rect x="1" y="1" width="798" height="36" rx="8" fill="#f6f8fa"/><line x1="1" y1="37" x2="799" y2="37" stroke="#d1d9e0"/>
+<text x="20" y="24" fill="#59636e">github.com/new</text>
+<rect x="700" y="8" width="44" height="22" rx="5" fill="#fff" stroke="#e5534b" stroke-width="2"/><text x="722" y="24" text-anchor="middle">+ ▾</text>
+<text x="40" y="72" font-size="20" font-weight="bold">Create a new repository</text>
+<text x="40" y="110" fill="#59636e">Owner *</text><rect x="40" y="118" width="170" height="32" rx="6" fill="#f6f8fa" stroke="#d1d9e0"/><text x="56" y="139">DeveloperMinki ▾</text>
+<text x="222" y="140" font-size="20" fill="#59636e">/</text>
+<text x="240" y="110" fill="#59636e">Repository name *</text><rect x="240" y="118" width="300" height="32" rx="6" fill="#fff" stroke="#e5534b" stroke-width="2"/><text x="254" y="139">pages-test</text>
+<text x="240" y="170" font-size="13" fill="#1f883d">✓ pages-test is available.</text>
+<text x="40" y="205" fill="#59636e">Description</text><rect x="40" y="213" width="500" height="32" rx="6" fill="#fff" stroke="#d1d9e0"/><text x="54" y="234" fill="#8c959f">(선택)</text>
+<rect x="40" y="265" width="720" height="44" rx="6" fill="#fff" stroke="#d1d9e0"/><text x="56" y="292">Choose visibility *</text>
+<rect x="640" y="273" width="100" height="28" rx="6" fill="#f6f8fa" stroke="#e5534b" stroke-width="2"/><text x="690" y="292" text-anchor="middle">Public ▾</text>
+<rect x="610" y="345" width="150" height="34" rx="6" fill="#1f883d" stroke="#e5534b" stroke-width="2"/><text x="685" y="367" text-anchor="middle" fill="#fff" font-weight="bold">Create repository</text>
+<g font-weight="bold" fill="#fff" font-size="13" text-anchor="middle">
+<circle cx="770" cy="19" r="11" fill="#e5534b"/><text x="770" y="24">1</text>
+<circle cx="560" cy="134" r="11" fill="#e5534b"/><text x="560" y="139">2</text>
+<circle cx="770" cy="270" r="11" fill="#e5534b"/><text x="770" y="275">3</text>
+<circle cx="590" cy="362" r="11" fill="#e5534b"/><text x="590" y="367">4</text>
+</g>
+</svg>
+<div class="cap">빨간 테두리 순서대로: ① + 메뉴 → ② 이름 입력 → ③ Public 확인 → ④ Create repository</div>
+</div>
+
+<!-- ============ STEP 2 ============ -->
+<h2 id="s2">2. index.html 올리기</h2>
+<div class="note"><b>파일 이름은 반드시 <code>index.html</code>(소문자)</b>이어야 주소만으로 페이지가 열려요. 다른 이름이면 주소 뒤에 파일 이름까지 붙여야 해요.</div>
+
+<h3>방법 A. 이미 만든 HTML 파일 끌어다 놓기 (추천)</h3>
+<ol class="steps">
+<li>내 PC에서 올릴 HTML 파일 이름을 <code>index.html</code>로 바꿔요.</li>
+<li>저장소 화면에서 <span class="btn">Add file ▾</span> → <b>Upload files</b>를 눌러요.<br>
+빈 저장소라면 화면 가운데의 <b>uploading an existing file</b> 링크를 눌러요.</li>
+<li><code>index.html</code>을 점선 영역에 끌어다 놓아요.</li>
+<li>아래쪽 <span class="btn g">Commit changes</span>를 눌러요.</li>
+</ol>
+
+<h3>방법 B. 웹 편집기에 직접 붙여넣기 (테스트 때 쓴 방법)</h3>
+<ol class="steps">
+<li>저장소 화면에서 <span class="btn">Add file ▾</span> → <b>Create new file</b>을 눌러요. 빈 저장소라면 <b>creating a new file</b> 링크를 눌러요.</li>
+<li>위쪽 파일 이름 칸에 <code>index.html</code>을 입력해요.</li>
+<li>아래 큰 편집 칸에 HTML 내용을 붙여넣어요.</li>
+<li>오른쪽 위 <span class="btn g">Commit changes...</span>를 누르면 창이 떠요. 메시지는 그대로 두고 창 안의 <span class="btn g">Commit changes</span>를 한 번 더 눌러요.</li>
+</ol>
+<div class="fig">
+<svg viewBox="0 0 800 330" font-family="Malgun Gothic, sans-serif" font-size="14">
+<rect x="1" y="1" width="798" height="328" rx="8" fill="#fff" stroke="#d1d9e0"/>
+<text x="20" y="38" fill="#0969da" font-weight="bold">pages-test</text><text x="102" y="38" fill="#59636e">/</text>
+<rect x="118" y="20" width="170" height="28" rx="6" fill="#fff" stroke="#e5534b" stroke-width="2"/><text x="130" y="39">index.html</text>
+<text x="300" y="39" fill="#59636e">in</text><rect x="320" y="24" width="46" height="20" rx="10" fill="#ddf4ff"/><text x="343" y="39" text-anchor="middle" fill="#0969da" font-size="12">main</text>
+<rect x="520" y="20" width="120" height="28" rx="6" fill="#f6f8fa" stroke="#d1d9e0"/><text x="580" y="39" text-anchor="middle">Cancel changes</text>
+<rect x="650" y="20" width="130" height="28" rx="6" fill="#1f883d" stroke="#e5534b" stroke-width="2"/><text x="715" y="39" text-anchor="middle" fill="#fff" font-weight="bold">Commit changes...</text>
+<rect x="20" y="64" width="760" height="246" rx="6" fill="#fff" stroke="#e5534b" stroke-width="2"/>
+<rect x="21" y="65" width="758" height="30" fill="#f6f8fa"/><text x="36" y="85">Edit</text><text x="80" y="85" fill="#59636e">Preview</text>
+<g font-family="Consolas, monospace" font-size="13" fill="#59636e"><text x="36" y="122">1  &lt;!DOCTYPE html&gt;</text><text x="36" y="144">2  &lt;html lang="ko"&gt;</text><text x="36" y="166">3  ...</text></g>
+<text x="400" y="230" text-anchor="middle" fill="#8c959f">여기에 HTML 내용 붙여넣기</text>
+<g font-weight="bold" fill="#fff" font-size="13" text-anchor="middle">
+<circle cx="300" cy="14" r="11" fill="#e5534b"/><text x="300" y="19">1</text>
+<circle cx="760" cy="290" r="11" fill="#e5534b"/><text x="760" y="295">2</text>
+<circle cx="640" cy="14" r="11" fill="#e5534b"/><text x="640" y="19">3</text>
+</g>
+</svg>
+<div class="cap">① 파일 이름 index.html → ② 내용 붙여넣기 → ③ Commit changes... 누르고, 뜨는 창에서 Commit changes 한 번 더</div>
+</div>
+
+<!-- ============ STEP 3 ============ -->
+<h2 id="s3">3. GitHub Pages 켜기</h2>
+<ol class="steps">
+<li>저장소 위쪽 탭에서 <b>Settings</b>(⚙)를 눌러요. 화면이 좁으면 <b>More ▾</b> 안에 있어요.</li>
+<li>왼쪽 메뉴 아래쪽의 <b>Pages</b>를 눌러요.</li>
+<li><b>Source</b>가 <span class="btn">Deploy from a branch</span>인지 확인해요.</li>
+<li><b>Branch</b>에서 <span class="btn">None ▾</span>을 눌러 <b>main</b>을 고르면 옆에 <span class="btn">/ (root)</span>가 나타나요. 그대로 둬요.</li>
+<li><span class="btn">Save</span>를 눌러요. 위쪽에 <i>"GitHub Pages source saved."</i>가 뜨면 성공이에요.</li>
+</ol>
+<div class="fig">
+<svg viewBox="0 0 800 330" font-family="Malgun Gothic, sans-serif" font-size="14">
+<rect x="1" y="1" width="798" height="328" rx="8" fill="#fff" stroke="#d1d9e0"/>
+<rect x="1" y="1" width="798" height="40" rx="8" fill="#f6f8fa"/><line x1="1" y1="41" x2="799" y2="41" stroke="#d1d9e0"/>
+<text x="20" y="27">Code</text><text x="80" y="27" fill="#59636e">Issues</text><text x="145" y="27" fill="#59636e">Pull requests</text><text x="260" y="27" fill="#59636e">Actions</text>
+<rect x="680" y="9" width="100" height="24" rx="5" fill="#fff" stroke="#e5534b" stroke-width="2"/><text x="730" y="26" text-anchor="middle">⚙ Settings</text>
+<line x1="180" y1="41" x2="180" y2="329" stroke="#d1d9e0"/>
+<text x="24" y="76" fill="#59636e">General</text><text x="24" y="106" fill="#59636e">Branches</text><text x="24" y="136" fill="#59636e">Actions</text>
+<rect x="14" y="152" width="150" height="30" rx="6" fill="#ddf4ff" stroke="#e5534b" stroke-width="2"/><text x="24" y="172" font-weight="bold">Pages</text>
+<text x="210" y="80" font-size="20" font-weight="bold">GitHub Pages</text>
+<text x="210" y="118" font-weight="bold">Source</text>
+<rect x="210" y="128" width="180" height="30" rx="6" fill="#f6f8fa" stroke="#d1d9e0"/><text x="222" y="148">Deploy from a branch ▾</text>
+<text x="210" y="190" font-weight="bold">Branch</text>
+<rect x="210" y="200" width="90" height="30" rx="6" fill="#f6f8fa" stroke="#e5534b" stroke-width="2"/><text x="222" y="220">main ▾</text>
+<rect x="310" y="200" width="100" height="30" rx="6" fill="#f6f8fa" stroke="#d1d9e0"/><text x="322" y="220">/ (root) ▾</text>
+<rect x="420" y="200" width="60" height="30" rx="6" fill="#f6f8fa" stroke="#e5534b" stroke-width="2"/><text x="450" y="220" text-anchor="middle">Save</text>
+<rect x="210" y="256" width="560" height="44" rx="6" fill="#ddf4ff" stroke="#54aeff"/><text x="226" y="283" fill="#0a3069">GitHub Pages source saved.</text>
+<g font-weight="bold" fill="#fff" font-size="13" text-anchor="middle">
+<circle cx="668" cy="21" r="11" fill="#e5534b"/><text x="668" y="26">1</text>
+<circle cx="170" cy="150" r="11" fill="#e5534b"/><text x="170" y="155">2</text>
+<circle cx="255" cy="244" r="11" fill="#e5534b"/><text x="255" y="249">3</text>
+<circle cx="494" cy="215" r="11" fill="#e5534b"/><text x="494" y="220">4</text>
+</g>
+</svg>
+<div class="cap">① Settings → ② Pages → ③ Branch를 main으로 → ④ Save</div>
+</div>
+
+<!-- ============ STEP 4 ============ -->
+<h2 id="s4">4. 배포 확인하고 접속하기</h2>
+<ol class="steps">
+<li>저장소 위쪽 <b>Actions</b> 탭을 눌러요. <b>pages build and deployment</b> 작업이 보여요.</li>
+<li>노란 원(진행 중)이 초록 체크(완료)로 바뀔 때까지 기다려요. 보통 1분 안팎이 걸려요.</li>
+<li>브라우저에서 <code>https://내아이디.github.io/저장소이름/</code>로 접속해요. 아이디는 소문자로 바뀌어요.<br>
+예: <a href="https://developerminki.github.io/pages-test/">https://developerminki.github.io/pages-test/</a></li>
+<li>Settings → Pages 화면 위쪽에도 <i>"Your site is live at …"</i>로 주소가 표시돼요.</li>
+</ol>
+<div class="fig">
+<svg viewBox="0 0 800 150" font-family="Malgun Gothic, sans-serif" font-size="14">
+<g text-anchor="middle">
+<rect x="20" y="20" width="220" height="90" rx="10" fill="#fff8c5" stroke="#bf8700"/>
+<circle cx="60" cy="65" r="12" fill="none" stroke="#bf8700" stroke-width="3" stroke-dasharray="50 26"/>
+<text x="150" y="58" font-weight="bold" fill="#6c4a00">진행 중</text><text x="150" y="82" font-size="13" fill="#6c4a00">In progress</text>
+<rect x="290" y="20" width="220" height="90" rx="10" fill="#dafbe1" stroke="#1f883d"/>
+<circle cx="330" cy="65" r="13" fill="#1f883d"/><path d="M323 65 l5 5 l9 -10" stroke="#fff" stroke-width="2.5" fill="none"/>
+<text x="420" y="58" font-weight="bold" fill="#116329">배포 완료</text><text x="420" y="82" font-size="13" fill="#116329">초록 체크</text>
+<rect x="560" y="20" width="220" height="90" rx="10" fill="#ddf4ff" stroke="#0969da"/>
+<text x="670" y="58" font-weight="bold" fill="#0a3069">주소로 접속</text><text x="670" y="82" font-size="13" fill="#0a3069">페이지 표시됨</text>
+</g>
+<g stroke="#59636e" stroke-width="1.6"><line x1="244" y1="65" x2="284" y2="65" marker-end="url(#a)"/><line x1="514" y1="65" x2="554" y2="65" marker-end="url(#a)"/></g>
+<text x="400" y="138" text-anchor="middle" font-size="13" fill="#59636e">완료 전에 접속하면 404 "There isn't a GitHub Pages site here"가 나와요. 잠시 뒤 새로고침하세요.</text>
+</svg>
+</div>
+
+<!-- ============ STEP 5 ============ -->
+<h2 id="s5">5. 내용 수정하기</h2>
+<p>한 번 설정한 뒤에는 <b>파일만 바꾸면</b> 같은 주소에 자동으로 반영돼요. Pages 설정은 다시 하지 않아도 돼요.</p>
+<table>
+<tr><th>방법</th><th>순서</th></tr>
+<tr><td>파일 통째로 교체</td><td><span class="btn">Add file ▾</span> → <b>Upload files</b> → 새 <code>index.html</code>을 끌어다 놓기 → <span class="btn g">Commit changes</span>. 같은 이름이면 덮어써요.</td></tr>
+<tr><td>웹에서 직접 고치기</td><td>저장소에서 <code>index.html</code> 클릭 → 오른쪽 위 연필(✎) 아이콘 → 수정 → <span class="btn g">Commit changes...</span> → <span class="btn g">Commit changes</span></td></tr>
+</table>
+<p>커밋하면 Actions에서 배포가 다시 돌고, 1~2분 뒤 반영돼요. 바로 안 바뀌면 <b>Ctrl + F5</b>로 강력 새로고침해요.</p>
+
+<!-- ============ TROUBLE ============ -->
+<h2 id="trouble">안 될 때 확인할 것</h2>
+<table>
+<tr><th>증상</th><th>확인할 것</th></tr>
+<tr><td>404 "There isn't a GitHub Pages site here"</td><td>Actions 탭에서 배포가 끝났는지 확인해요. 끝났는데도 안 되면 Settings → Pages에서 Branch가 <code>main</code>으로 저장됐는지 봐요.</td></tr>
+<tr><td>404인데 배포는 완료됨</td><td>파일 이름이 정확히 <code>index.html</code>(소문자)인지, 폴더 안이 아니라 저장소 맨 위에 있는지 확인해요.</td></tr>
+<tr><td>Pages 메뉴에 Branch 선택이 없음</td><td>저장소가 Private이면 무료 계정에서는 Pages를 쓸 수 없어요. Settings → General 맨 아래에서 Public으로 바꿔요.</td></tr>
+<tr><td>수정했는데 예전 화면이 보임</td><td>배포가 끝났는지 확인하고 Ctrl + F5로 새로고침해요.</td></tr>
+<tr><td>한글이 깨짐</td><td>HTML의 <code>&lt;head&gt;</code> 안에 <code>&lt;meta charset="utf-8"&gt;</code>가 있는지 확인해요.</td></tr>
+</table>
+
+<h3>테스트 저장소 지우기</h3>
+<p>저장소 <b>Settings → General</b> 맨 아래 <b>Danger Zone</b> → <b>Delete this repository</b>를 눌러요. 저장소 이름을 입력하라고 하면 입력해서 확인해요. 지우면 사이트도 함께 사라지고 되돌릴 수 없어요.</p>
+
+<!-- ============ CLI ============ -->
+<h2 id="cli">(선택) 명령어로 올리는 방법</h2>
+<p>PC 폴더에서 계속 작업하면서 자주 올릴 거라면 Git 명령어가 편해요. 1단계(저장소 만들기)와 3단계(Pages 켜기)는 웹에서 똑같이 하고, 2단계만 아래 명령어로 바꾸면 돼요.</p>
+<div class="fig">
+<svg viewBox="0 0 800 130" font-family="Malgun Gothic, sans-serif" font-size="14" text-anchor="middle">
+<rect x="20" y="20" width="200" height="70" rx="10" fill="#f6f8fa" stroke="#8c959f"/><text x="120" y="50" font-weight="bold">내 PC 폴더</text><text x="120" y="72" font-size="13" fill="#59636e">git add / commit</text>
+<rect x="300" y="20" width="200" height="70" rx="10" fill="#ddf4ff" stroke="#0969da"/><text x="400" y="50" font-weight="bold" fill="#0a3069">GitHub 저장소</text><text x="400" y="72" font-size="13" fill="#0a3069">git push로 업로드</text>
+<rect x="580" y="20" width="200" height="70" rx="10" fill="#dafbe1" stroke="#1f883d"/><text x="680" y="50" font-weight="bold" fill="#116329">GitHub Pages</text><text x="680" y="72" font-size="13" fill="#116329">자동 배포</text>
+<g stroke="#59636e" stroke-width="1.6"><line x1="224" y1="55" x2="294" y2="55" marker-end="url(#a)"/><line x1="504" y1="55" x2="574" y2="55" marker-end="url(#a)"/></g>
+<text x="400" y="118" font-size="13" fill="#59636e">회색은 내 PC, 파란색과 초록색은 GitHub에서 일어나는 일</text>
+</svg>
+</div>
+<p><b>처음 한 번</b> (PowerShell에서 HTML이 있는 폴더로 이동한 뒤 실행)</p>
+<pre style="background:#f6f8fa;border:1px solid #d1d9e0;border-radius:8px;padding:14px;overflow-x:auto;font-size:14px;line-height:1.6"><code style="border:0;background:none;padding:0">git init -b main
+git add index.html
+git commit -m "첫 업로드"
+git remote add origin https://github.com/내아이디/저장소이름.git
+git push -u origin main</code></pre>
+<p>처음 <code>push</code>할 때 GitHub 로그인 창이 뜨면 로그인해요.</p>
+<p><b>수정할 때마다</b></p>
+<pre style="background:#f6f8fa;border:1px solid #d1d9e0;border-radius:8px;padding:14px;overflow-x:auto;font-size:14px;line-height:1.6"><code style="border:0;background:none;padding:0">git add index.html
+git commit -m "내용 업데이트"
+git push</code></pre>
+<div class="note">폴더에 엑셀, <code>memos.json</code>, <code>_tool/</code>처럼 올리면 안 되는 파일이 있다면 <code>.gitignore</code> 파일에 이름을 적어 두세요. 그리고 <code>git add .</code> 대신 <code>git add index.html</code>처럼 올릴 파일만 지정하면 실수로 올라가는 일을 막을 수 있어요.</div>
+
+</body>
+</html>
